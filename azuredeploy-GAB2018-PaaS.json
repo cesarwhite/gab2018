@@ -1,0 +1,730 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Application": {
+      "type": "string",
+      "defaultValue": "gab",
+      "metadata": {
+        "description": "Name of the Application."
+      }
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "d",
+      "minLength": 1,
+      "maxLength": 1,
+      "allowedValues": [
+        "d",
+        "q",
+        "s",
+        "p",
+        "x"
+      ],
+      "metadata": {
+        "description": "d: development; q: quality assurance; s: stage; p: production."
+      }
+    },
+    "CostCenter": {
+      "type": "int",
+      "defaultValue": 99999,
+      "metadata": {
+        "description": "Specify the Cost Center to be charged for this application and set of resources."
+      }
+    },
+    "appServicePlanSkuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and capacity for Non-Calc Objects. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "CoreServicesLocation": {
+      "type": "string",
+      "defaultValue": "West US-uw",
+      "minLength": 2,
+      "allowedValues": [
+        "West US-uw",
+        "West US 2-uw2",
+        "East US-ue",
+        "East US 2-ue2",
+        "Central US-cus",
+        "East Asia-ae",
+        "Southeast Asia-ase",
+        "North Central US-unc",
+        "South Central US-usc",
+        "North Europe-en",
+        "West Europe-ew",
+        "Japan West-jw",
+        "Japan East-je",
+        "Brazil South-bs",
+        "Australia East-ause",
+        "Australia Southeast-ausw",
+        "South India-is",
+        "Central India-ic",
+        "West India-iw",
+        "Canada Central-cc",
+        "Canada East-ce",
+        "UK South-uks",
+        "UK West-ukw",
+        "West Central US-uwc",
+        "Korea Central-kc",
+        "Korea South-ks",
+        "unitedstates-usa"
+      ],
+      "metadata": {
+        "description": "Specify the Location (data center) for the mayority of the services."
+      }
+    },
+    "AlternateServicesLocation1": {
+      "type": "string",
+      "defaultValue": "West US 2-uw2",
+      "minLength": 2,
+      "allowedValues": [
+        "West US-uw",
+        "West US 2-uw2",
+        "East US-ue",
+        "East US 2-ue2",
+        "Central US-cus",
+        "East Asia-ae",
+        "Southeast Asia-ase",
+        "North Central US-unc",
+        "South Central US-usc",
+        "North Europe-en",
+        "West Europe-ew",
+        "Japan West-jw",
+        "Japan East-je",
+        "Brazil South-bs",
+        "Australia East-ause",
+        "Australia Southeast-ausw",
+        "South India-is",
+        "Central India-ic",
+        "West India-iw",
+        "Canada Central-cc",
+        "Canada East-ce",
+        "UK South-uks",
+        "UK West-ukw",
+        "West Central US-uwc",
+        "Korea Central-kc",
+        "Korea South-ks",
+        "unitedstates-usa"
+      ],
+      "metadata": {
+        "description": "Specify the alternate Location (data center) for the services that are not available on the Core Services Location."
+      }
+    },
+    "AlternateServicesLocation2": {
+      "type": "string",
+      "defaultValue": "Central US-cus",
+      "minLength": 2,
+      "allowedValues": [
+        "West US-uw",
+        "West US 2-uw2",
+        "East US-ue",
+        "East US 2-ue2",
+        "Central US-cus",
+        "East Asia-ae",
+        "Southeast Asia-ase",
+        "North Central US-unc",
+        "South Central US-usc",
+        "North Europe-en",
+        "West Europe-ew",
+        "Japan West-jw",
+        "Japan East-je",
+        "Brazil South-bs",
+        "Australia East-ause",
+        "Australia Southeast-ausw",
+        "South India-is",
+        "Central India-ic",
+        "West India-iw",
+        "Canada Central-cc",
+        "Canada East-ce",
+        "UK South-uks",
+        "UK West-ukw",
+        "West Central US-uwc",
+        "Korea Central-kc",
+        "Korea South-ks",
+        "unitedstates-usa"
+      ],
+      "metadata": {
+        "description": "Specify the alternate Location (data center) for the services that are not available on the Core Services Location and/or Alternate Services Location 1."
+      }
+    },
+    "AzureSQLServerAdminLogin": {
+      "defaultValue": "sqladmin",
+      "type": "string",
+      "minLength": 2,
+      "metadata": {
+        "description": "Specify SQL Server administrator login. 'sa' is not allowed."
+      }
+
+    },
+    "AzureSQLServerAdminLoginPassword": {
+      "type": "securestring",
+      "minLength": 5,
+      "metadata": {
+        "description": "Specify SQL Server administrator password. Minimum 8 characters and Maximum 16; Requires 3 out of 4: Lowercase, Uppercase, Numbers(0-9), Symbols:  .-_!#^~"
+      }
+    },
+    "gabDBCollation": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "SQL_Latin1_General_CP1_CI_AS",
+      "metadata": {
+        "description": "Specify DB Collation."
+      }
+    },
+    "gabDBEdition": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Basic: 5 DTU; Standard: 10-3000 DTU; Premium: 125-4000 DTU."
+      }
+    },
+    "gabDBEditionPerformanceLevel": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "S0",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P6"
+      ],
+      "metadata": {
+        "description": "Describes the performance level for Edition. It should match the Edition selected."
+      }
+    },
+    "gabSharedStorageAccountReplicationOption": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ],
+      "metadata": {
+        "description": "Describes the Replication for the Storage Account."
+      }
+    }
+  },
+  "variables": {
+    "CoreServicesLocationCode": "[split(parameters('CoreServicesLocation'), '-')[1]]",
+    "CoreServicesLocationValue": "[split(parameters('CoreServicesLocation'), '-')[0]]",
+    "AlternateServicesLocation1Code": "[split(parameters('AlternateServicesLocation1'), '-')[1]]",
+    "AlternateServicesLocation1Value": "[split(parameters('AlternateServicesLocation1'), '-')[0]]",
+    "AlternateServicesLocation2Code": "[split(parameters('AlternateServicesLocation2'), '-')[1]]",
+    "AlternateServicesLocation2Value": "[split(parameters('AlternateServicesLocation2'), '-')[0]]",
+    "tagApplication": "[parameters('Application')]",
+    "tagEnvironment": "[parameters('Environment')]",
+    "tagCostCenter": "[parameters('CostCenter')]",
+    "appServicePlanName": "[concat('gab-', parameters('Environment'), '-gb-sp-', variables('CoreServicesLocationCode'))]",
+    "serviceBusName": "[concat('gab-', parameters('Environment'), '-gb-sb-', variables('CoreServicesLocationCode'))]",
+    "serviceBusQueueOne": "[concat('gab-', parameters('Environment'), '-calcdistbu-sbq-', variables('CoreServicesLocationCode'))]",
+    "keyVaultName": "[concat('gab-', parameters('Environment'), '-gb-kv-', variables('CoreServicesLocationCode'))]",
+    "azureSQLServerName": "[concat('gab-', parameters('Environment'), '-sharedres-sql-', variables('CoreServicesLocationCode'))]",
+    "gabDBName": "[concat('gab-', parameters('Environment'), '-sharedres-db-', variables('CoreServicesLocationCode'))]",
+    "appInsightsName": "[concat('gab-', parameters('Environment'), '-gb-ai-', variables('AlternateServicesLocation1Code'))]",
+    "gabSharedresStorageAccountName": "[concat('gab', parameters('Environment'), 'sharedressg', variables('CoreServicesLocationCode'))]",
+    "afsCalculationDistributionName": "[concat('gab-', parameters('Environment'), '-calcdistbu-afs-', variables('CoreServicesLocationCode'))]",
+    "afsFunctionOne": "[concat('gab-', parameters('Environment'), '-importdata-afs-', variables('CoreServicesLocationCode'))]",
+    "afsFunctionOneStorageAccountName": "[concat('gb', parameters('Environment'), 'fnconesg', variables('CoreServicesLocationCode'))]",
+    "apiName": "[concat('gab-', parameters('Environment'), '-capi-api-', variables('CoreServicesLocationCode'))]",
+    "webAppName": "[concat('gab-', parameters('Environment'), '-gb-wap-', variables('CoreServicesLocationCode'))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('appServicePlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[variables('coreServicesLocationValue')]",
+      "apiVersion": "2016-09-01",
+      "sku": {
+        "name": "[parameters('appServicePlanSkuName')]"
+      },
+      "dependsOn": [],
+      "tags": {
+        "displayName": "App Service Plan",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "properties": {
+        "name": "[variables('appServicePlanName')]",
+        "numberOfWorkers": 1
+      }
+    }, //App Service Plan
+    {
+      "apiVersion": "2015-08-01",
+      "name": "[variables('serviceBusName')]",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "location": "[variables('coreServicesLocationValue')]",
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard"
+      },
+      "properties": {
+      },
+      "tags": {
+        "displayName": "Service Bus",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "[variables('serviceBusQueueOne')]",
+          "type": "queues",
+          "location": "[variables('coreServicesLocationValue')]",
+          "tags": {
+            "displayName": "Queue One",
+            "Application": "[variables('tagApplication')]",
+            "Environment": "[variables('tagEnvironment')]",
+            "CostCenter": "[variables('tagCostCenter')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.ServiceBus/namespaces/', variables('serviceBusName'))]"
+          ],
+          "properties": {
+            "deadLetteringOnMessageExpiration": true, // Indicates whether this queue has dead letter support when a message expires.
+            "defaultMessageTimeToLive": "14.00:00:00", // The default message time to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus queue. This is the default value used when TimeToLive is not set on a message itself.
+            "lockDuration": "00:05:00", // The duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.
+            "maxDeliveryCount": "10" // The maximum delivery count. A message is automatically deadlettered after this number of deliveries.
+          },
+          "resources": [
+          ]
+        } //serviceBusQueueOne
+       ]
+    }, //Service Bus
+    {
+      "apiVersion": "2015-06-01",
+      "name": "[variables('keyvaultName')]",
+      "type": "Microsoft.KeyVault/vaults",
+      "location": "[variables('coreServicesLocationValue')]",
+      "tags": {
+        "displayName": "KeyVault",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "properties": {
+        "enabledForDeployment": false,
+        "enabledForDiskEncryption": false,
+        "accessPolicies": [],
+        "tenantId": "[subscription().tenantId]",
+        "sku": {
+          "name": "Standard",
+          "family": "A"
+        }
+      }
+    }, //Key Vault
+    {
+      "apiVersion": "2014-04-01-preview",
+      "name": "[variables('azureSQLServerName')]",
+      "type": "Microsoft.Sql/servers",
+      "kind": "v12.0",
+      "location": "[variables('coreServicesLocationValue')]",
+      "scale": null,
+      "tags": {
+        "displayName": "Azure SQL Sever",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "properties": {
+        "administratorLogin": "[parameters('AzureSQLServerAdminLogin')]",
+        "administratorLoginPassword": "[parameters('AzureSQLServerAdminLoginPassword')]",
+        "version": "12.0"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01-preview",
+          "name": "[variables('gabDBName')]",
+          "type": "databases",
+          "kind": "v12.0,system",
+          "location": "[variables('coreServicesLocationValue')]",
+          "scale": null,
+          "tags": {
+            "displayName": "GAB2018 Database",
+            "Application": "[variables('tagApplication')]",
+            "Environment": "[variables('tagEnvironment')]",
+            "CostCenter": "[variables('tagCostCenter')]"
+          },
+          "properties": {
+            "edition": "[parameters('gabDBEdition')]",
+            "status": "Online",
+            "collation": "[parameters('gabDBCollation')]",
+            "maxSizeBytes": "32212254720",
+            "requestedServiceObjectiveName": "[parameters('gabDBEditionPerformanceLevel')]",
+            "sampleName": null,
+            "defaultSecondaryLocation": "East US",
+            "earliestRestoreDate": null,
+            "elasticPoolName": null,
+            "containmentState": 2,
+            "readScale": "Disabled",
+            "failoverGroupId": null
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('azureSQLServerName'))]"
+          ]
+        },
+        {
+          "apiVersion": "2014-04-01-preview",
+          "type": "firewallrules",
+          "location": "[variables('coreServicesLocationValue')]",
+          "name": "AllowAllWindowsAzureIps",
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('azureSQLServerName'))]"
+          ]
+        }
+      ]
+    }, //Azure SQL Server
+    {
+      "apiVersion": "2016-01-01",
+      "name": "[variables('gabSharedresStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[variables('coreServicesLocationValue')]",
+      "sku": {
+        "name": "[parameters('gabSharedStorageAccountReplicationOption')]"
+      },
+      "dependsOn": [],
+      "tags": {
+        "displayName": "Storage Account - Shared",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "kind": "Storage"
+    }, //Storage Account - Shared
+    {
+      "apiVersion": "2016-03-01",
+      "name": "[variables('afsFunctionOne')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[variables('coreServicesLocationValue')]",
+      "tags": {
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('appServicePlanName'))]": "Resource",
+        "displayName": "ASF - Function One",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "properties": {
+        "name": "[variables('afsFunctionOne')]",
+        "clientAffinityEnabled": false,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "AzureWebJobsDashboard",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('afsFunctionOneStorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('afsFunctionOneStorageAccountName')), '2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('afsFunctionOneStorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('afsFunctionOneStorageAccountName')), '2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~1"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components/', variables('afsFunctionOne')), '2015-05-01').InstrumentationKey]"
+            }
+          ],
+          "alwaysOn": true
+        },
+        "resources": [
+          {
+            "apiVersion": "2015-08-01",
+            "name": "Microsoft.ApplicationInsights.AzureWebSites",
+            "type": "siteextensions",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', variables('afsFunctionOne'))]"
+            ],
+            "properties": {
+            }
+          }
+        ],
+        "hostingEnvironment": ""
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "[resourceId('microsoft.insights/components/', variables('afsFunctionOne'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('afsFunctionOneStorageAccountName'))]"
+      ],
+      "kind": "functionapp"
+    }, //ASF - Function One
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('afsFunctionOneStorageAccountName')]",
+      "location": "[variables('coreServicesLocationValue')]",
+      "tags": {
+        "displayName": "ASF - Storage Account - Function One",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "properties": {
+        "accountType": "Standard_LRS"
+      }
+    }, //ASF - Storage Account Function One
+    {
+      "apiVersion": "2015-05-01",
+      "name": "[variables('afsFunctionOne')]",
+      "type": "microsoft.insights/components",
+      "location": "[variables('AlternateServicesLocation1Value')]",
+      "tags": {
+        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('afsFunctionOne'))]": "Resource",
+        "displayName": "ASF - AppInsights - Function One",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "properties": {
+        "ApplicationId": "[variables('afsFunctionOne')]",
+        "Request_Source": "IbizaWebAppExtensionCreate"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    }, //ASF - AppInsights - Function One
+    {
+      "apiVersion": "2015-08-01",
+      "name": "[variables('apiName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[variables('coreServicesLocationValue')]",
+      "tags": {
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('appServicePlanName'))]": "Resource",
+        "displayName": "API",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "kind": "api",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "[resourceId('microsoft.insights/components/', variables('apiName'))]"
+      ],
+      "properties": {
+        "name": "[variables('apiName')]",
+        "clientAffinityEnabled": false,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "hostNames": [
+          "[concat(variables('apiName'), '.azurewebsites.net')]"
+        ],
+        "enabledHostNames": [
+          "[concat(variables('apiName'), '.azurewebsites.net')]",
+          "[concat(variables('apiName'), '.scm.azurewebsites.net')]"
+        ],
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('apiName'),'.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          },
+          {
+            "name": "[concat(variables('apiName'),'.scm.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          }
+        ],
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components/', variables('apiName')), '2015-05-01').InstrumentationKey]"
+            }
+          ],
+          "alwaysOn": true
+        },
+        "resources": [
+          {
+            "apiVersion": "2015-08-01",
+            "name": "Microsoft.ApplicationInsights.AzureWebSites",
+            "type": "siteextensions",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', variables('apiName'))]"
+            ],
+            "properties": {
+            }
+          }
+        ],
+        "hostingEnvironment": ""
+      }
+    }, //API
+    {
+      "apiVersion": "2015-05-01",
+      "name": "[variables('apiName')]",
+      "type": "microsoft.insights/components",
+      "location": "[variables('AlternateServicesLocation1Value')]",
+      "tags": {
+        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('apiName'))]": "Resource",
+        "displayName": "API - AppInsights",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "properties": {
+        "ApplicationId": "[variables('apiName')]",
+        "Request_Source": "IbizaWebAppExtensionCreate"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    }, // API - AppInsights
+    {
+      "apiVersion": "2016-03-01",
+      "name": "[variables('webAppName')]",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "location": "[variables('coreServicesLocationValue')]",
+      "tags": {
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('appServicePlanName'))]": "Resource",
+        "displayName": "WebApp",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "[resourceId('microsoft.insights/components/', variables('webAppName'))]"
+      ],
+      "properties": {
+        "name": "[variables('webAppName')]",
+        "clientAffinityEnabled": false,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "hostNames": [
+          "[concat(variables('webAppName'), '.azurewebsites.net')]"
+        ],
+        "enabledHostNames": [
+          "[concat(variables('webAppName'), '.azurewebsites.net')]",
+          "[concat(variables('webAppName'), '.scm.azurewebsites.net')]"
+        ],
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('webAppName'),'.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          },
+          {
+            "name": "[concat(variables('webAppName'),'.scm.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          }
+        ],
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components/', variables('webAppName')), '2015-05-01').InstrumentationKey]"
+            }
+          ],
+          "alwaysOn": true
+        },
+        "resources": [
+          {
+            "apiVersion": "2015-08-01",
+            "name": "Microsoft.ApplicationInsights.AzureWebSites",
+            "type": "siteextensions",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', variables('webAppName'))]"
+            ],
+            "properties": {
+            }
+          }
+        ],
+        "hostingEnvironment": ""
+      }
+    },//WebApp
+    {
+      "apiVersion": "2015-05-01",
+      "name": "[variables('webAppName')]",
+      "type": "microsoft.insights/components",
+      "location": "West US 2",
+      "tags": {
+        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('webAppName'))]": "Resource",
+        "displayName": "WebApp - AppInsights",
+        "Application": "[variables('tagApplication')]",
+        "Environment": "[variables('tagEnvironment')]",
+        "CostCenter": "[variables('tagCostCenter')]"
+      },
+      "properties": {
+        "ApplicationId": "[variables('webAppName')]",
+        "Request_Source": "IbizaWebAppExtensionCreate"
+      }
+    }//WebApp - AppInsights 
+  ],
+  "outputs": {
+    "ApplicationOutput": {
+      "value": "[parameters('Application')]",
+      "type": "string"
+    },
+    "EnvironmentOutput": {
+      "value": "[parameters('Environment')]",
+      "type": "string"
+    },
+    "CostCenterOutput": {
+      "value": "[parameters('CostCenter')]",
+      "type": "int"
+    },
+    "appServicePlanSkuNameOutput": {
+      "value": "[parameters('appServicePlanSkuName')]",
+      "type": "string"
+    },
+    "CoreServicesLocationOutput": {
+      "value": "[parameters('CoreServicesLocation')]",
+      "type": "string"
+    },
+    "AlternateServicesLocation1Output": {
+      "value": "[parameters('AlternateServicesLocation1')]",
+      "type": "string"
+    },
+    "AlternateServicesLocation2Output": {
+      "value": "[parameters('AlternateServicesLocation2')]",
+      "type": "string"
+    },
+    "AzureSQLServerAdminLoginOutput": {
+      "value": "[parameters('AzureSQLServerAdminLogin')]",
+      "type": "string"
+    },
+    "gabSharedStorageAccountReplicationOptionOutput": {
+      "value": "[parameters('gabSharedStorageAccountReplicationOption')]",
+      "type": "string"
+    }
+  }
+}

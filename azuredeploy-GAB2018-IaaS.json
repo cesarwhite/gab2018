@@ -1,0 +1,835 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "Application": {
+        "type": "string",
+        "defaultValue": "GAB2018IAAS",
+        "metadata": {
+          "description": "Name of the Application."
+        }
+      },
+        "Environment": {
+            "type": "string",
+            "defaultValue": "d",
+            "minLength": 1,
+            "maxLength": 1,
+            "allowedValues": [
+                "d",
+                "q",
+                "s",
+                "p",
+                "x"
+            ],
+            "metadata": {
+                "description": "d: development; q: quality assurance; s: stage; p: production; x: test."
+            }
+        },
+        "CostCenter": {
+            "type": "int",
+            "defaultValue": 99999,
+            "metadata": {
+                "description": "Specify the Cost Center to be charged for this application and set of resources."
+            }
+        },
+        "AdminUsername": {
+            "type": "string",
+            "defaultValue": "admin",
+            "minLength": 1,
+            "metadata": {
+                "description": "Admin username."
+            }
+        },
+        "AdminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Admin password. It must comply Azure requirements"
+            }
+        },
+        "CoreServicesLocation": {
+            "type": "string",
+            "defaultValue": "West US-uw",
+            "minLength": 2,
+            "allowedValues": [
+                "West US-uw",
+                "West US 2-uw2",
+                "East US-ue",
+                "East US 2-ue2",
+                "Central US-cus",
+                "East Asia-ae",
+                "Southeast Asia-ase",
+                "North Central US-unc",
+                "South Central US-usc",
+                "North Europe-en",
+                "West Europe-ew",
+                "Japan West-jw",
+                "Japan East-je",
+                "Brazil South-bs",
+                "Australia East-ause",
+                "Australia Southeast-ausw",
+                "South India-is",
+                "Central India-ic",
+                "West India-iw",
+                "Canada Central-cc",
+                "Canada East-ce",
+                "UK South-uks",
+                "UK West-ukw",
+                "West Central US-uwc",
+                "Korea Central-kc",
+                "Korea South-ks",
+                "unitedstates-usa"
+            ],
+            "metadata": {
+                "description": "Specify the Location (data center) for the mayority of the services."
+            }
+        },
+        "AlternateServicesLocation1": {
+            "type": "string",
+            "defaultValue": "West US 2-uw2",
+            "minLength": 2,
+            "allowedValues": [
+                "West US-uw",
+                "West US 2-uw2",
+                "East US-ue",
+                "East US 2-ue2",
+                "Central US-cus",
+                "East Asia-ae",
+                "Southeast Asia-ase",
+                "North Central US-unc",
+                "South Central US-usc",
+                "North Europe-en",
+                "West Europe-ew",
+                "Japan West-jw",
+                "Japan East-je",
+                "Brazil South-bs",
+                "Australia East-ause",
+                "Australia Southeast-ausw",
+                "South India-is",
+                "Central India-ic",
+                "West India-iw",
+                "Canada Central-cc",
+                "Canada East-ce",
+                "UK South-uks",
+                "UK West-ukw",
+                "West Central US-uwc",
+                "Korea Central-kc",
+                "Korea South-ks",
+                "unitedstates-usa"
+            ],
+            "metadata": {
+                "description": "Specify the alternate Location (data center) for the services that are not available on the Core Services Location."
+            }
+        },
+        "AlternateServicesLocation2": {
+            "type": "string",
+            "defaultValue": "Central US-cus",
+            "minLength": 2,
+            "allowedValues": [
+                "West US-uw",
+                "West US 2-uw2",
+                "East US-ue",
+                "East US 2-ue2",
+                "Central US-cus",
+                "East Asia-ae",
+                "Southeast Asia-ase",
+                "North Central US-unc",
+                "South Central US-usc",
+                "North Europe-en",
+                "West Europe-ew",
+                "Japan West-jw",
+                "Japan East-je",
+                "Brazil South-bs",
+                "Australia East-ause",
+                "Australia Southeast-ausw",
+                "South India-is",
+                "Central India-ic",
+                "West India-iw",
+                "Canada Central-cc",
+                "Canada East-ce",
+                "UK South-uks",
+                "UK West-ukw",
+                "West Central US-uwc",
+                "Korea Central-kc",
+                "Korea South-ks",
+                "unitedstates-usa"
+            ],
+            "metadata": {
+                "description": "Specify the alternate Location (data center) for the services that are not available on the Core Services Location and/or Alternate Services Location 1."
+            }
+        },
+        "VirtualMachineID": {
+            "type": "string",
+            "minLength": 1,
+            "defaultValue": "vm",
+            "metadata": {
+                "description": "The VM Identifier. VM Name is restrictes to a max. of 15 characters."
+            }
+        },
+        "VirtualMachineImageSKU": {
+            "type": "string",
+            "defaultValue": "2012-R2-Datacenter",
+            "allowedValues": [
+                "2008-R2-SP1",
+                "2012-Datacenter",
+                "2012-R2-Datacenter"
+            ],
+            "metadata": {
+                "description": "The Windows version for the VM."
+            }
+        },
+        "VirtualMachineSize": {
+            "type": "string",
+            "minLength": 1,
+            "defaultValue": "Standard_D2_v2",
+            "allowedValues": [
+                "Basic_A0",
+                "Basic_A1",
+                "Basic_A2",
+                "Basic_A3",
+                "Basic_A4",
+                "Standard_A0",
+                "Standard_A1",
+                "Standard_A2",
+                "Standard_A3",
+                "Standard_A4",
+                "Standard_A5",
+                "Standard_A6",
+                "Standard_A7",
+                "Standard_D1_v2",
+                "Standard_DS1_v2",
+                "Standard_D2_v2",
+                "Standard_DS2_v2",
+                "Standard_D3_v2",
+                "Standard_DS3_v2",
+                "Standard_D4_v2",
+                "Standard_D11_v2",
+                "Standard_D12_v2",
+                "Standard_D13_v2",
+                "Standard_D14_v2"
+            ],
+            "metadata": {
+                "description": "Size of the virtual machine, must be available in the virtual machine's location."
+            }
+        },
+        "NumberOfVirtualMachineInstances": {
+            "type": "int",
+            "minValue": 1,
+            "defaultValue": 3,
+            "metadata": {
+                "description": "Number of VM instances to be created behind internal load balancer control."
+            }
+        },
+        "VirtualNetworkResourceGroupName": {
+            "type": "string",
+            "minLength": 5,
+            "defaultValue": "core.networking",
+            "metadata": {
+                "description": "Name of the Resource Group were the VNet exists."
+            }
+        },
+        "VirtualNetworkName": {
+            "type": "string",
+            "minLength": 5,
+            "defaultValue": "vnet.usw.unitynext.nonprod",
+            "metadata": {
+                "description": "Name of the VNet where VMs will be provisioned."
+            }
+        },
+        "VirtualNetworkSubnetName": {
+            "type": "string",
+            "minLength": 5,
+            "defaultValue": "snet.usw.unitynext.app",
+            "metadata": {
+                "description": "Name of the Subnet where VMs will be provisioned."
+            }
+        },
+        "LoadBalancerPrivateStaticIPAddress": {
+            "type": "string",
+            "defaultValue": "10.239.24.125",
+            "metadata": {
+                "description": "IP Address for the Internal Load balancer."
+            }
+        }
+    },
+    "variables": {
+        "coreServicesLocationCode": "[split(parameters('CoreServicesLocation'), '-')[1]]",
+        "coreServicesLocationValue": "[split(parameters('CoreServicesLocation'), '-')[0]]",
+        "alternateServicesLocation1Code": "[split(parameters('AlternateServicesLocation1'), '-')[1]]",
+        "alternateServicesLocation1Value": "[split(parameters('AlternateServicesLocation1'), '-')[0]]",
+        "alternateServicesLocation2Code": "[split(parameters('AlternateServicesLocation2'), '-')[1]]",
+        "alternateServicesLocation2Value": "[split(parameters('AlternateServicesLocation2'), '-')[0]]",
+        "tagApplication": "[parameters('Application')]",
+        "tagEnvironment": "[parameters('Environment')]",
+        "tagCostCenter": "[parameters('CostCenter')]",
+        "imagePublisher": "MicrosoftWindowsServer",
+        "imageOffer": "WindowsServer",
+        "availabilitySetName": "[concat('gba-', parameters('Environment'), '-', parameters('VirtualMachineID') ,'-as-', variables('CoreServicesLocationCode'))]", //"AvSet",
+        "vhdStorageType": "Standard_LRS",
+        "vnetId": "[resourceId(parameters('VirtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('VirtualNetworkName'))]", // "[resourceId('Microsoft.Network/virtualNetworks', parameters('VirtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('VirtualNetworkSubnetName'))]",
+        "networkInterfaceNamePrefix": "BackendVMNic",
+        "loadBalancerName": "[concat('gba-', parameters('Environment'), '-', parameters('VirtualMachineID'),'-lbi-', variables('CoreServicesLocationCode'))]", //"BackendLB",
+        "lbId": "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]",
+        "diagnosticsStorageAccountName": "[concat('gba', parameters('Environment'), 'rdvmdiagssg', variables('CoreServicesLocationCode'))]", //"[variables('vhdStorageAccountName')]"
+        "backnendPoolName": "BackendPool"
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode'), '-nsg')]",
+            "location": "[variables('coreServicesLocationValue')]",
+            "tags": {
+                "displayName": "Network Security Group - n",
+                "Application": "[variables('tagApplication')]",
+                "Environment": "[variables('tagEnvironment')]",
+                "CostCenter": "[variables('tagCostCenter')]"
+            },
+            "dependsOn": [
+            ],
+            "copy": {
+                "name": "nsgLoop",
+                "count": "[parameters('NumberOfVirtualMachineInstances')]"
+            },
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "description": "Allow RDP",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        },
+                        "comments": "Allows RDP."
+                    }
+                ]
+            }
+        }, // NSG
+        {
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[variables('availabilitySetName')]",
+            "location": "[variables('coreServicesLocationValue')]",
+            "tags": {
+                "displayName": "Availability Set",
+                "Application": "[variables('tagApplication')]",
+                "Environment": "[variables('tagEnvironment')]",
+                "CostCenter": "[variables('tagCostCenter')]"
+            },
+            "properties": {}
+        }, //Availability Set
+        {
+            "apiVersion": "2016-01-01",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('diagnosticsStorageAccountName')]", 
+            "location": "[variables('coreServicesLocationValue')]",
+            "tags": {
+                "displayName": "Diagnostics Storage Account",
+                "Application": "[variables('tagApplication')]",
+                "Environment": "[variables('tagEnvironment')]",
+                "CostCenter": "[variables('tagCostCenter')]"
+            },
+            "sku": {
+                "name": "[variables('vhdStorageType')]"
+            },
+            "kind": "Storage"
+        }, //Diagnostics Storage Account
+
+        {
+            "apiVersion": "2016-01-01",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[concat('gba', parameters('Environment'), parameters('VirtualMachineID'),copyindex(),'vmssg', variables('CoreServicesLocationCode'))]", //"[variables('diagnosticsStorageAccountName')]", //"[variables('vhdStorageAccountName')]",
+            "location": "[variables('coreServicesLocationValue')]",
+            "tags": {
+                "displayName": "Virtual Machine Storage Account - n",
+                "Application": "[variables('tagApplication')]",
+                "Environment": "[variables('tagEnvironment')]",
+                "CostCenter": "[variables('tagCostCenter')]"
+            },
+            "copy": {
+                "name": "saLoop",
+                "count": "[parameters('NumberOfVirtualMachineInstances')]"
+            },
+            "sku": {
+                "name": "[variables('vhdStorageType')]"
+            },
+            "kind": "Storage"
+        }, //VM Storage Account - One Per Instance
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'),copyindex(),'-vm-', variables('CoreServicesLocationCode'))]", //"[concat(variables('networkInterfaceNamePrefix'), copyindex())]",
+            "location": "[variables('coreServicesLocationValue')]",
+            "tags": {
+                //"[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Network/networkSecurityGroups/', concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode'), '-nsg'))]": "Resource",
+                "displayName": "Network Interface - n",
+                "Application": "[variables('tagApplication')]",
+                "Environment": "[variables('tagEnvironment')]",
+                "CostCenter": "[variables('tagCostCenter')]"
+            },
+            "copy": {
+                "name": "nicLoop",
+                "count": "[parameters('NumberOfVirtualMachineInstances')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode'), '-nsg'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    //"id": "[concat(variables('lbId'), '/backendAddressPools/BackendPool1')]"
+                                    "id": "[concat(variables('lbId'), '/backendAddressPools/', variables('backnendPoolName'))]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode'), '-nsg'))]"
+                }
+            }
+        }, //Network Interface
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/loadBalancers",
+            "name": "[variables('loadBalancerName')]",
+            "location": "[variables('coreServicesLocationValue')]",
+            "tags": {
+                "displayName": "Load Balancer",
+                "Application": "[variables('tagApplication')]",
+                "Environment": "[variables('tagEnvironment')]",
+                "CostCenter": "[variables('tagCostCenter')]"
+            },
+            "dependsOn": [
+                //"[variables('vnetId')]"
+            ],
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAddress": "[parameters('LoadBalancerPrivateStaticIPAddress')]", //"10.0.2.6",
+                            "privateIPAllocationMethod": "Static"
+                        },
+                        "name": "LoadBalancerFrontend"
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "[variables('backnendPoolName')]"
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIPConfigurations/LoadBalancerFrontend')]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/backendAddressPools/', variables('backnendPoolName'))]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe-Tcp-3389')]"
+                            },
+                            "protocol": "Tcp",
+                            "frontendPort": 3389,
+                            "backendPort": 3389,
+                            "idleTimeoutInMinutes": 15
+                        },
+                        "name": "lbprobe-Tcp-3389"
+                    }
+                ],
+                "probes": [
+                    {
+                        "properties": {
+                            "protocol": "Tcp",
+                            "port": 3389,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        },
+                        "name": "lbprobe-Tcp-3389"
+                    }
+                ]
+            }
+        }, //Load Balancer
+        {
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode'))]", //"[concat(variables('vmNamePrefix'), copyindex())]",
+            "copy": {
+                "name": "virtualMachineLoop",
+                "count": "[parameters('NumberOfVirtualMachineInstances')]"
+            },
+            "location": "[variables('coreServicesLocationValue')]",
+            "tags": {
+                "displayName": "Virtual Machine - n",
+                "Application": "[variables('tagApplication')]",
+                "Environment": "[variables('tagEnvironment')]",
+                "CostCenter": "[variables('tagCostCenter')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/', concat('gba', parameters('Environment'), parameters('VirtualMachineID'), copyindex(),'vmssg', variables('CoreServicesLocationCode')))]",
+                //"[resourceId('Microsoft.Storage/storageAccounts/', variables('vhdStorageAccountName'))]",
+                "nicloop",
+                "[resourceId('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]"
+            ],
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('VirtualMachineSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode'))]", //"[concat(variables('vmNamePrefix'), copyIndex())]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[parameters('VirtualMachineImageSKU')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "osdisk",
+                        "vhd": {
+                            "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', concat('gba', parameters('Environment'), parameters('VirtualMachineID'), copyindex(),'vmssg', variables('CoreServicesLocationCode'))), '2016-01-01').primaryEndpoints.blob, 'vhds/osdisk', copyindex(), '.vhd')]" //"[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('vhdStorageAccountName')), '2016-01-01').primaryEndpoints.blob, 'vhds/osdisk', copyindex(), '.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode')))]" //"[resourceId('Microsoft.Network/networkInterfaces', concat(variables('networkInterfaceNamePrefix'), copyindex()))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', concat('gba', parameters('Environment'), parameters('VirtualMachineID'), copyindex(),'vmssg', variables('CoreServicesLocationCode'))), '2016-01-01').primaryEndpoints.blob]" //"[reference(resourceId('Microsoft.Storage/storageAccounts', variables('vhdStorageAccountName')), '2016-01-01').primaryEndpoints.blob]"
+                    }
+                }
+            },
+            "resources": [
+                {
+                    "type": "extensions",
+                    "name": "Microsoft.Insights.VMDiagnosticsSettings",
+                    "apiVersion": "2016-03-30",
+                    "location": "[variables('coreServicesLocationValue')]",
+                    "tags": {
+                        "displayName": "Azure VM Diagnostics",
+                        "Application": "[variables('tagApplication')]",
+                        "Environment": "[variables('tagEnvironment')]",
+                        "CostCenter": "[variables('tagCostCenter')]"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachines/', concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode')))]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Azure.Diagnostics",
+                        "type": "IaaSDiagnostics",
+                        "typeHandlerVersion": "1.5",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "WadCfg": {
+                                "DiagnosticMonitorConfiguration": {
+                                    "overallQuotaInMB": "4096",
+                                    "DiagnosticInfrastructureLogs": {
+                                        "scheduledTransferLogLevelFilter": "Error"
+                                    },
+                                    "WindowsEventLog": {
+                                        "scheduledTransferPeriod": "PT1M",
+                                        "DataSource": [
+                                            {
+                                                "name": "Application!*[System[(Level = 1) or (Level = 2)]]"
+                                            },
+                                            {
+                                                "name": "Security!*[System[(Level = 1 or Level = 2)]]"
+                                            },
+                                            {
+                                                "name": "System!*[System[(Level = 1 or Level = 2)]]"
+                                            }
+                                        ]
+                                    },
+                                    "PerformanceCounters": {
+                                        "scheduledTransferPeriod": "PT1M",
+                                        "PerformanceCounterConfiguration": [
+                                            {
+                                                "counterSpecifier": "\\Processor(_Total)\\% Processor Time",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Percent",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "CPU utilization",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Processor(_Total)\\% Privileged Time",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Percent",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "CPU privileged time",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Processor(_Total)\\% User Time",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Percent",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "CPU user time",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Processor Information(_Total)\\Processor Frequency",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Count",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "CPU frequency",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\System\\Processes",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Count",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Processes",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Process(_Total)\\Thread Count",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Count",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Threads",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Process(_Total)\\Handle Count",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Count",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Handles",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Memory\\% Committed Bytes In Use",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Percent",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Memory usage",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Memory\\Available Bytes",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Bytes",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Memory available",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Memory\\Committed Bytes",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Bytes",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Memory committed",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\Memory\\Commit Limit",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Bytes",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Memory commit limit",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\% Disk Time",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Percent",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk active time",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\% Disk Read Time",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Percent",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk active read time",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\% Disk Write Time",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Percent",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk active write time",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\Disk Transfers/sec",
+                                                "sampleRate": "PT15S",
+                                                "unit": "CountPerSecond",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk operations",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\Disk Reads/sec",
+                                                "sampleRate": "PT15S",
+                                                "unit": "CountPerSecond",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk read operations",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\Disk Writes/sec",
+                                                "sampleRate": "PT15S",
+                                                "unit": "CountPerSecond",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk write operations",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\Disk Bytes/sec",
+                                                "sampleRate": "PT15S",
+                                                "unit": "BytesPerSecond",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk speed",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\Disk Read Bytes/sec",
+                                                "sampleRate": "PT15S",
+                                                "unit": "BytesPerSecond",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk read speed",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\PhysicalDisk(_Total)\\Disk Write Bytes/sec",
+                                                "sampleRate": "PT15S",
+                                                "unit": "BytesPerSecond",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk write speed",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "counterSpecifier": "\\LogicalDisk(_Total)\\% Free Space",
+                                                "sampleRate": "PT15S",
+                                                "unit": "Percent",
+                                                "annotation": [
+                                                    {
+                                                        "displayName": "Disk free space (percentage)",
+                                                        "locale": "en-us"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "Metrics": {
+                                        "resourceId": "[resourceId('Microsoft.Compute/virtualMachines/', concat('gb-', parameters('Environment'), '-', parameters('VirtualMachineID'), copyindex(),'-vm-', variables('CoreServicesLocationCode')))]", //"[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmNamePrefix'), copyindex()))]",
+                                        "MetricAggregation": [
+                                            {
+                                                "scheduledTransferPeriod": "PT1H"
+                                            },
+                                            {
+                                                "scheduledTransferPeriod": "PT1M"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "protectedSettings": {
+                            "storageAccountName": "[variables('diagnosticsStorageAccountName')]",
+                            "storageAccountKey": "[listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('diagnosticsStorageAccountName')), '2016-01-01').keys[0].value]"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
