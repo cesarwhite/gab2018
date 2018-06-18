@@ -230,7 +230,7 @@
         "VirtualNetworkName": {
             "type": "string",
             "minLength": 5,
-            "defaultValue": "vnet.usw.unitynext.nonprod",
+            "defaultValue": "vnet.<loc>.nonprod",
             "metadata": {
                 "description": "Name of the VNet where VMs will be provisioned."
             }
@@ -238,7 +238,7 @@
         "VirtualNetworkSubnetName": {
             "type": "string",
             "minLength": 5,
-            "defaultValue": "snet.usw.unitynext.app",
+            "defaultValue": "snet.<loc>.app",
             "metadata": {
                 "description": "Name of the Subnet where VMs will be provisioned."
             }
